@@ -5,7 +5,7 @@ import gym_hadamard
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print("Using device: ", device)
 
-env = gym.make('gym_hadamard/hadamard-v0', dim = 2, order = 3)
+env = gym.make('gym_hadamard/hadamard-v0', dim = 2, order = 3, render_mode = "human")
 
 observation, info = env.reset(seed = 42)
 

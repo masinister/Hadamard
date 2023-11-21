@@ -3,11 +3,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 class HadamardEnv(gym.Env):
+    metadata = {"render_modes": ["human"]}
 
-    def __init__(self, dim, order):
+    def __init__(self, dim, order, render_mode = None):
         super(HadamardEnv, self).__init__()
         self.dim = dim
         self.order = order
+        self.render_mode = render_mode
         self.observation_space = gym.spaces.Dict(
             {
                 "matrix": gym.spaces.MultiDiscrete([self.order] * (self.dim ** 2)),
@@ -31,6 +33,8 @@ class HadamardEnv(gym.Env):
         self._target = 0
         observation = self._get_obs()
         info = self._get_info()
+        if self.render_mode == "human":
+            self.render()
         return observation, info
 
     def step(self, action):
@@ -39,10 +43,12 @@ class HadamardEnv(gym.Env):
         observation = self._get_obs()
         info = self._get_info()
         terminated = self._target >= self.dim ** 2    
+        if self.render_mode == "human":
+            self.render()
         return observation, np.abs(info["det"]) * (1 - terminated), terminated, False, info
     
-    def render(self, mode='human', close=False):
-        img = self.state
+    def render(self):
+        img = np.reshape(self._matrix, (self.dim, self.dim))
         fig = plt.figure(0)
         plt.clf()
         plt.imshow(img)
